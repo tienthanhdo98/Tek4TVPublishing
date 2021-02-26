@@ -12,9 +12,13 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.insertFooterItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.tek4tv.tek4tvpublishing.R
+import app.tek4tv.tek4tvpublishing.model.HeaderData
+import app.tek4tv.tek4tvpublishing.model.Video
 import app.tek4tv.tek4tvpublishing.model.VideoDetail
 import app.tek4tv.tek4tvpublishing.viewmodel.VideoPlayerViewModel
 import com.google.android.exoplayer2.MediaItem
@@ -24,6 +28,8 @@ import com.google.android.exoplayer2.util.Util
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_video_player.*
 import kotlinx.android.synthetic.main.exo_player_control_view.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class VideoPlayerActivity : AppCompatActivity()
@@ -32,7 +38,7 @@ class VideoPlayerActivity : AppCompatActivity()
     private lateinit var videoView: PlayerView
 
 
-    private val videosAdapter = VideoAdapter()
+    private val videosAdapter = VideoPagingAdapter()
 
     private val viewModel: VideoPlayerViewModel by viewModels()
 
@@ -45,7 +51,13 @@ class VideoPlayerActivity : AppCompatActivity()
         setupRecycleView()
 
         //if(viewModel.curVideo == null)
-        viewModel.videoId = intent.getLongExtra(VIDEO_KEY, 0)
+        val videoData = intent.getSerializableExtra(VIDEO_KEY)!! as Video
+
+        viewModel.headerData = videoData.run {
+            HeaderData(title,createDate,playlist.name,description)
+        }
+
+        viewModel.videoId = videoData.media.id
 
         initButtons()
 
@@ -66,8 +78,13 @@ class VideoPlayerActivity : AppCompatActivity()
 
         viewModel.curVideo.observe(this)
         {
-            txt_vid_name.text = viewModel.curVideo.value!!.name
             playVideo(viewModel.curVideo.value!!)
+        }
+
+        lifecycleScope.launch {
+            viewModel.pagingData.collectLatest {
+                videosAdapter.submitData(it)
+            }
         }
     }
 
@@ -177,32 +194,15 @@ class VideoPlayerActivity : AppCompatActivity()
 
     private fun setupRecycleView()
     {
-        videosAdapter.videos = viewModel.videoList
+        //videosAdapter.videos = viewModel.videoList
         videosAdapter.videoClickListener = {
             val intent = Intent(applicationContext, VideoPlayerActivity::class.java)
-            intent.putExtra(VIDEO_KEY, it.media.id)
+            intent.putExtra(VIDEO_KEY, it)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }
         rv_video_list.adapter = videosAdapter
         rv_video_list.layoutManager = LinearLayoutManager(this)
-        rv_video_list.addOnScrollListener(object : RecyclerView.OnScrollListener()
-        {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int)
-            {
-                super.onScrollStateChanged(recyclerView, newState)
-                val canScrollUp = rv_video_list.canScrollVertically(-1)
-                if (!canScrollUp)
-                {
-                    if (txt_vid_name.visibility != View.VISIBLE)
-                        txt_vid_name.visibility = View.VISIBLE
-                } else
-                {
-                    if (txt_vid_name.visibility != View.GONE)
-                        txt_vid_name.visibility = View.GONE
-                }
-            }
-        })
     }
 
     private fun playVideo(video: VideoDetail?)
@@ -213,14 +213,14 @@ class VideoPlayerActivity : AppCompatActivity()
         viewModel.resetVideoParams()
 
         val mediaItem = MediaItem.fromUri("https://vodovp.tek4tv.vn/${video.path}")
-        txt_vid_name.text = video.name
+        //txt_vid_name.text = video.name
         player?.apply {
             setMediaItem(mediaItem)
             seekTo(viewModel.currentWindow, viewModel.playbackPosition)
             prepare()
         }
         //viewModel.curVideo = video
-        videosAdapter.videos = viewModel.videoList.filter { it.id != video.id }
+        //videosAdapter.videos = viewModel.videoList.filter { it.id != video.id }
     }
 
     companion object

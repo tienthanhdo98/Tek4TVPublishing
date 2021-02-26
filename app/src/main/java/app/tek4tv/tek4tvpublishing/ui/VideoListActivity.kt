@@ -12,8 +12,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
+import androidx.paging.insertHeaderItem
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.tek4tv.tek4tvpublishing.R
+import app.tek4tv.tek4tvpublishing.model.UiModel
 import app.tek4tv.tek4tvpublishing.model.Video
 import app.tek4tv.tek4tvpublishing.viewmodel.VideoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -123,7 +126,7 @@ class VideoListActivity : AppCompatActivity()
         rv_videos.layoutManager = LinearLayoutManager(this)
         videosAdapter.videoClickListener = {
             val intent = Intent(applicationContext, VideoPlayerActivity::class.java)
-            intent.putExtra(VideoPlayerActivity.VIDEO_KEY, it.media.id)
+            intent.putExtra(VideoPlayerActivity.VIDEO_KEY, it)
             startActivity(intent)
         }
     }
@@ -133,7 +136,7 @@ class VideoListActivity : AppCompatActivity()
         collectVideoJob?.cancel()
         collectVideoJob = lifecycleScope.launch {
             data.collectLatest {
-                videosAdapter.submitData(it)
+                videosAdapter.submitData(it.map { video -> UiModel.VideoUiItem(video) })
             }
         }
     }

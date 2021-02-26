@@ -14,10 +14,7 @@ import app.tek4tv.tek4tvpublishing.network.VideoPagingSource
 import app.tek4tv.tek4tvpublishing.repositories.UserRepository
 import app.tek4tv.tek4tvpublishing.repositories.VideoRepository
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.switchMap
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class VideoListViewModel @ViewModelInject constructor(

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Tek4TV Publishing</string>
+
+    <string name="years_before">%d năm trước</string>
+    <string name="months_before">%d tháng trước</string>
+    <string name="days_before">%d ngày trước</string>
+    <string name="hours_before">%d giờ trước</string>
+    <string name="minutes_before">%d phút trước</string>
 </resources>

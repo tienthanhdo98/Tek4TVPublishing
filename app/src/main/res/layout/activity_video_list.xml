@@ -34,7 +34,7 @@
 
     <ImageView
         android:id="@+id/img_logo"
-        android:layout_width="50dp"
+        android:layout_width="30dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/app_toolbar"

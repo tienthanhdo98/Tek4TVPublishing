@@ -82,7 +82,7 @@ data class Video (
 
         @Json(name = "Playlist")
         val playlist: Playlist
-)
+) : Serializable
 
 data class Media (
         @Json(name = "ID")
@@ -90,7 +90,7 @@ data class Media (
 
         @Json(name = "Name")
         val name: String
-)
+): Serializable
 
 data class Playlist (
         @Json(name = "Name")
@@ -104,4 +104,4 @@ data class Playlist (
 
         @Json(name = "Color")
         val color: String
-)
+): Serializable
