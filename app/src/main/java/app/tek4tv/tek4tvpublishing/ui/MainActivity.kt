@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        if (viewModel.token == "")
-            viewModel.getToken()
+       /* if (viewModel.token == "")
+            viewModel.getToken()*/
 
         val username = et_username.text.toString()
         val pass = et_password.text.toString()

@@ -15,21 +15,29 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class VideoRepository @Inject constructor(private val videosService: VideosService)
-{
+class VideoRepository @Inject constructor(private val videosService: VideosService) {
 
     var allVideoList = mutableListOf<Video>()
     var currentVideoList = listOf<Video>()
 
-    suspend fun getVideos(query: String = "", page: Int = 0): Response<VideosResponse>?
-    {
+    suspend fun getVideos(
+        playlistId: Long = 0,
+        privateKey: String = "",
+        query: String = "",
+        page: Int = 0
+    ): Response<VideosResponse>? {
 
-        return try
-        {
-            val response = videosService.getVideo(Body(queryString = query, page = page))
+        return try {
+            val response = videosService.getVideo(
+                Body(
+                    playlistId = playlistId,
+                    privateKey = privateKey,
+                    queryString = query,
+                    page = page
+                )
+            )
 
-            if (response.isSuccessful)
-            {
+            if (response.isSuccessful) {
 
                 if (query == "")
                     allVideoList = response.body()!!.result as MutableList<Video>
@@ -37,43 +45,44 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
                 currentVideoList = response.body()!!.result
             }
             response
-        } catch (e: Exception)
-        {
+        } catch (e: Exception) {
             Log.e("VideoRepo.getVideos", e.message ?: "")
             null
         }
     }
 
-    suspend fun getVideoDetail(id: Long): Response<VideoDetail>?
-    {
-        return try
-        {
+    suspend fun getVideoDetail(id: Long): Response<VideoDetail>? {
+        return try {
             val response = videosService.getVideoDetail(id)
 
             /*return if(response.isSuccessful) response
             else null*/
             response
 
-        } catch (e: Exception)
-        {
+        } catch (e: Exception) {
             Log.e("VideoRepo.getVideos", e.message ?: "")
             e.printStackTrace()
             null
         }
     }
 
-    fun getSearchResult(query: String) = Pager(
-            config = PagingConfig(pageSize = 20)
+    fun getSearchResult(
+        query: String = "",
+        playlistId: Long = 0,
+        privateKey: String = ""
+    ) = Pager(
+        config = PagingConfig(pageSize = 20)
     ) {
-        VideoPagingSource(this, query)
+        VideoPagingSource(this, query, playlistId, privateKey)
     }
-            .flow
+        .flow
 
-    suspend fun revertFromAllPlaylist(id : Long) : Boolean
-    {
+    suspend fun revertFromAllPlaylist(id: Long): Boolean {
         return videosService.revertFromAllPlaylist(id)
     }
 
-    suspend fun revertFromPlaylist(revertPayload: PlaylistRevertPayload)
-    = videosService.revertFromPlaylist(revertPayload)
+    suspend fun revertFromPlaylist(revertPayload: PlaylistRevertPayload) =
+        videosService.revertFromPlaylist(revertPayload)
+
+
 }

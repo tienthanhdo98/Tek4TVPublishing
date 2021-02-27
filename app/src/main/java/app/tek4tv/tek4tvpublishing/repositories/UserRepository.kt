@@ -3,6 +3,7 @@ package app.tek4tv.tek4tvpublishing.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import app.tek4tv.tek4tvpublishing.model.PlaylistItem
 import app.tek4tv.tek4tvpublishing.model.User
 import app.tek4tv.tek4tvpublishing.network.AuthService
 import app.tek4tv.tek4tvpublishing.network.UserBody
@@ -27,15 +28,18 @@ class UserRepository @Inject constructor(
             "PassWord" to body.password
         )
         return try {
-            val response = authService.login(mbody, "Bearer ".plus(token))
+            val response = authService.login(mbody)
 
-            if (response.isSuccessful)
+            if (response.isSuccessful) {
                 currentUser = response.body()
+                Log.e("userid",response.body()!!.userId)
+            }
             else
                 _errorText.value = "Error: ${response.code()} - Error Message: ${response.message()}"
 
             response
         } catch (e: Exception) {
+            e.printStackTrace()
             Log.e("getToken()", e.message!!)
             _errorText.value = e.message ?: ""
             null
@@ -60,6 +64,25 @@ class UserRepository @Inject constructor(
             Log.e("getToken()", e.message!!)
             _errorText.value = e.message ?: ""
             ""
+        }
+    }
+
+    suspend fun getUserPlaylist(): Response<List<PlaylistItem>>?
+    {
+        return try
+        {
+            val response = authService.getPlaylistListUser(currentUser!!.userId)
+
+            if (response.isSuccessful)
+            {
+                response
+            }
+            else
+                null
+        } catch (e: Exception)
+        {
+            Log.e("VideoRepo.getVideos", e.message ?: "")
+            null
         }
     }
 }

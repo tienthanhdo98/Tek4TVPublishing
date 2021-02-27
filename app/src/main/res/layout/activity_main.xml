@@ -35,7 +35,7 @@
         android:ems="10"
         android:hint="Tên người dùng"
         android:inputType="textPersonName"
-        android:text="devtek"
+        android:text="Administrator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
         android:ems="10"
         android:hint="Mật khẩu"
         android:inputType="textPassword"
-        android:text="dev@tek4tv"
+        android:text="cntt@654321"
         app:layout_constraintEnd_toEndOf="@+id/et_username"
         app:layout_constraintStart_toStartOf="@+id/et_username"
         app:layout_constraintTop_toBottomOf="@+id/et_username" />

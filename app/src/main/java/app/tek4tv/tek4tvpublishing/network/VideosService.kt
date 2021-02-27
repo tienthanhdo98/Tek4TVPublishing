@@ -1,5 +1,6 @@
 package app.tek4tv.tek4tvpublishing.network
 
+import app.tek4tv.tek4tvpublishing.model.PlaylistItem
 import app.tek4tv.tek4tvpublishing.model.PlaylistRevertPayload
 import app.tek4tv.tek4tvpublishing.model.VideoDetail
 import retrofit2.Response
@@ -24,4 +25,6 @@ interface VideosService {
     suspend fun revertFromPlaylist(
         @Body revertPayload: PlaylistRevertPayload
     ) : Boolean
+
+
 }

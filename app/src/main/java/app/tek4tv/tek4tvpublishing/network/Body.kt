@@ -31,7 +31,7 @@ data class Body
     ),
 
     @Json(name = "PlaylistID")
-    val playlistId: Int = 2059,
+    val playlistId: Long = 0,
 
     @Json(name = "Page")
     val page: Int = 0,
@@ -43,5 +43,5 @@ data class Body
     val size: Int = 18,
 
     @Json(name = "PrivateKey")
-    val privateKey: String = "85de4925-c90f-4da9-8133-3d9d96c42963"
+    val privateKey: String = ""
 )

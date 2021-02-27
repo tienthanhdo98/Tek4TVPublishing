@@ -12,13 +12,15 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
-import androidx.paging.insertHeaderItem
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.tek4tv.tek4tvpublishing.R
+import app.tek4tv.tek4tvpublishing.model.PlaylistItem
 import app.tek4tv.tek4tvpublishing.model.UiModel
 import app.tek4tv.tek4tvpublishing.model.Video
 import app.tek4tv.tek4tvpublishing.viewmodel.VideoListViewModel
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_video_list.*
 import kotlinx.coroutines.Job
@@ -28,65 +30,130 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class VideoListActivity : AppCompatActivity()
-{
+class VideoListActivity : AppCompatActivity() {
     private val viewModel: VideoListViewModel by viewModels()
     private val videosAdapter = VideoPagingAdapter()
     lateinit var toolbar: Toolbar
     lateinit var searchView: SearchView
     lateinit var imgLogo: ImageView
+    lateinit var swipeLayout: SwipeRefreshLayout
+    var currentChip : Chip? = null
+    lateinit var allChip : Chip
 
-    var collectVideoJob : Job? = null
+    var collectVideoJob: Job? = null
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_list)
 
+        swipeLayout = findViewById(R.id.swipe_layout)
+        searchView = findViewById(R.id.search_view)
+        imgLogo = findViewById(R.id.img_logo)
+
+        swipeLayout.setDistanceToTriggerSync(250)
+        swipeLayout.setOnRefreshListener {
+            viewModel.apply {
+                setQuery(currentQuery, currentPlaylist.id!!, currentPlaylist.privateKey!!)
+            }
+            registerObservers(viewModel.pagingData)
+        }
+
         toolbar = findViewById(R.id.app_toolbar)
         setSupportActionBar(toolbar)
-
         val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.ic_account_box_24)
         toolbar.overflowIcon = drawable
         title = ""
 
 
-        searchView = findViewById(R.id.search_view)
-        //imgUserAvatar = findViewById(R.id.img_user_avatar)
-        imgLogo = findViewById(R.id.img_logo)
+        viewModel.getUserPlaylists().observe(this)
+        {
+            initChip(it)
+        }
 
-        searchView.setIconifiedByDefault(false)
 
         initSearch()
 
         setupRecycleView()
-        registerObservers(viewModel.pagingData)
-
-
+        //registerObservers(viewModel.pagingData)
     }
 
-    private fun initSearch()
-    {
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener
+    private fun initChip(list: List<PlaylistItem>) {
+        allChip = getChip(PlaylistItem(0, getString(R.string.all), ""))
         {
-            override fun onQueryTextSubmit(query: String?): Boolean
-            {
-                if (query != null)
-                {
+            viewModel.currentPlaylist = PlaylistItem(0, getString(R.string.all), "")
+            rv_videos.scrollToPosition(0)
+            viewModel.setQuery(viewModel.currentQuery, 0, "")
+            registerObservers(viewModel.pagingData)
+        }
+        allChip.isChecked = true
+        //currentChip = allChip
+        playlist_chip_group.addView(allChip)
+        list.forEach { item ->
+            playlist_chip_group.addView(getChip(item) {
+                viewModel.currentPlaylist = item
+                rv_videos.scrollToPosition(0)
+                viewModel.setQuery(viewModel.currentQuery, item.id!!, item.privateKey!!)
+                registerObservers(viewModel.pagingData)
+            })
+        }
+    }
+
+    private fun getChip(playlistItem: PlaylistItem, checkedListener: () -> Unit) =
+        Chip(this).apply {
+            text = playlistItem.name
+            isCheckable = true
+
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    currentChip?.isChecked = false
+                    currentChip = this
+                    checkedListener.invoke()
+                    /**/
+                } else {
+                    if(text != getString(R.string.all))
+                    {
+                        rv_videos.scrollToPosition(0)
+                        currentChip = allChip
+                        allChip.isChecked = true
+                    }
+
+                    //viewModel.currentPlaylist = PlaylistItem(0,"","")
+                    /*viewModel.setQuery("", 0, "")
+                    registerObservers(viewModel.pagingData)*/
+                }
+            }
+        }
+
+    private fun initSearch() {
+        searchView.setIconifiedByDefault(false)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
                     rv_videos.scrollToPosition(0)
-                    val data = viewModel.setQuery(query)
+                    viewModel.currentQuery = query
+                    val data = viewModel.run {
+                        viewModel.setQuery(
+                            query,
+                            currentPlaylist.id!!,
+                            currentPlaylist.privateKey!!
+                        )
+                    }
                     registerObservers(data)
                 }
 
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean
-            {
-                if (newText != null && newText == "")
-                {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null && newText == "") {
                     rv_videos.scrollToPosition(0)
-                    val data = viewModel.setQuery("")
+                    viewModel.currentQuery = ""
+                    viewModel.currentPlaylist = PlaylistItem(0,"","")
+                    val data = viewModel.run {
+                        viewModel.setQuery("", currentPlaylist.id!!, currentPlaylist.privateKey!!)
+                    }
                     registerObservers(data)
                 }
                 return false
@@ -94,8 +161,7 @@ class VideoListActivity : AppCompatActivity()
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean
-    {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
         menuInflater.inflate(R.menu.video_list_menu, menu)
 
@@ -107,11 +173,9 @@ class VideoListActivity : AppCompatActivity()
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean
-    {
-        return when(item.itemId)
-        {
-            R.id.item_logout ->{
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_logout -> {
                 val mainIntent = Intent(this, MainActivity::class.java)
                 mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(mainIntent)
@@ -121,8 +185,7 @@ class VideoListActivity : AppCompatActivity()
         }
     }
 
-    private fun setupRecycleView()
-    {
+    private fun setupRecycleView() {
         rv_videos.adapter = videosAdapter
         rv_videos.layoutManager = LinearLayoutManager(this)
         videosAdapter.videoClickListener = {
@@ -132,11 +195,11 @@ class VideoListActivity : AppCompatActivity()
         }
     }
 
-    private fun registerObservers(data : Flow<PagingData<Video>>)
-    {
+    private fun registerObservers(data: Flow<PagingData<Video>>) {
         collectVideoJob?.cancel()
         collectVideoJob = lifecycleScope.launch {
             data.collectLatest {
+                swipeLayout.isRefreshing = false
                 videosAdapter.submitData(it.map { video -> UiModel.VideoUiItem(video) })
             }
         }

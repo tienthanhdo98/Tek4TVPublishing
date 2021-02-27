@@ -93,7 +93,7 @@
                     android:layout_marginRight="8dp"
                     android:ems="10"
                     android:inputType="textEmailAddress"
-                    android:text="devtek" />
+                    android:text="Administrator" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -116,7 +116,7 @@
                     android:layout_marginBottom="80dp"
                     android:ems="10"
                     android:inputType="textPassword"
-                    android:text="dev@tek4tv" />
+                    android:text="cntt@654321" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
