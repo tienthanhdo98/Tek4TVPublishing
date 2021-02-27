@@ -9,10 +9,10 @@ import retrofit2.http.POST
 
 interface AuthService {
     @Headers("Content-Type: application/json")
-    @POST("/api/token")
+    @POST("https://mam.tek4tv.vn/api/token")
     suspend fun getToken(@Body body: Map<String, String>): Response<String>
 
     @Headers("Content-Type: application/json")
-    @POST("/iot/v1/app/login")
+    @POST("https://mam.tek4tv.vn/iot/v1/app/login")
     suspend fun login(@Body body: Map<String, String>, @Header("Authorization") token: String): Response<User>
 }

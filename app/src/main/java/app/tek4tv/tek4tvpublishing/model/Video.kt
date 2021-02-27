@@ -81,7 +81,9 @@ data class Video (
         val media: Media,
 
         @Json(name = "Playlist")
-        val playlist: Playlist
+        val playlist: Playlist,
+        @Json(name = "Keyword")
+        val keyword: String
 ) : Serializable
 
 data class Media (

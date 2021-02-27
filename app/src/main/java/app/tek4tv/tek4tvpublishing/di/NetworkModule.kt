@@ -27,7 +27,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(moshi: Moshi): Retrofit =
         Retrofit.Builder()
-            .baseUrl("https://mam.tek4tv.vn/") //testing
+            .baseUrl("https://ovp.tek4tv.vn/api/") //testing
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()

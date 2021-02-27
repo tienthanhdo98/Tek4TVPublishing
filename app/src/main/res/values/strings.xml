@@ -11,4 +11,5 @@
     <string name="username">Tên đăng nhâp</string>
     <string name="password">Mật khẩu</string>
     <string name="processing">Đang xử lý</string>
+    <string name="all">Tất cả</string>
 </resources>

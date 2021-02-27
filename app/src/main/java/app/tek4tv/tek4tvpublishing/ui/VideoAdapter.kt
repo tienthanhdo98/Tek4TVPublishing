@@ -56,27 +56,13 @@ private var adapter: JsonAdapter<List<MediaItem>> = moshi.adapter<List<MediaItem
 
 private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
-class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root), View.OnCreateContextMenuListener
+class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root)
 {
     private val imgThumb = root.findViewById<ImageView>(R.id.img_video_thumb)
     private val txtTitle = root.findViewById<TextView>(R.id.txt_video_title)
     private val txtCreatedDate = root.findViewById<TextView>(R.id.txt_created_date)
     private val txtTag = root.findViewById<TextView>(R.id.txt_item_tag)
-    private val btnPublish = root.findViewById<Button>(R.id.btn_publish_revert)
-
-    init {
-        root.setOnCreateContextMenuListener { menu, v, menuInfo ->
-
-        }
-    }
-
-    override fun onCreateContextMenu(
-        menu: ContextMenu?,
-        v: View?,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-
-    }
+    //private val btnPublish = root.findViewById<Button>(R.id.btn_publish_revert)
 
     fun bind(video: Video, itemClickListener: (Video) -> Unit)
     {
@@ -90,7 +76,7 @@ class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root), V
                 .load(finalUrl)
                 .into(imgThumb)
 
-        btnPublish.text = if(video.isPublish) "Rút lại" else "Xuất bản"
+        //btnPublish.text = if(video.isPublish) "Rút lại" else "Xuất bản"
 
         root.setOnClickListener {
             itemClickListener(video)

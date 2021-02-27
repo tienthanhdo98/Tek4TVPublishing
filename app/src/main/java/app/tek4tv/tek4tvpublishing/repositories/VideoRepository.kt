@@ -3,6 +3,7 @@ package app.tek4tv.tek4tvpublishing.repositories
 import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import app.tek4tv.tek4tvpublishing.model.PlaylistRevertPayload
 import app.tek4tv.tek4tvpublishing.model.Video
 import app.tek4tv.tek4tvpublishing.model.VideoDetail
 import app.tek4tv.tek4tvpublishing.network.Body
@@ -67,4 +68,12 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
         VideoPagingSource(this, query)
     }
             .flow
+
+    suspend fun revertFromAllPlaylist(id : Long) : Boolean
+    {
+        return videosService.revertFromAllPlaylist(id)
+    }
+
+    suspend fun revertFromPlaylist(revertPayload: PlaylistRevertPayload)
+    = videosService.revertFromPlaylist(revertPayload)
 }
