@@ -22,12 +22,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setContentView(R.layout.login_layout)
+        //setSupportActionBar(findViewById(R.id.toolbar))
 
 
 
         btn_login.setOnClickListener {
+            btn_login.isClickable = false
+            btn_login.text = getString(R.string.processing)
             login()
         }
 
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private fun registerObservers() {
         viewModel.user.observe(this)
         {
-            txt_result.text = it.toString()
+            //txt_result.text = it.toString()
 
             val startVideoActivity = Intent(applicationContext, VideoListActivity::class.java)
             startActivity(startVideoActivity)
@@ -47,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.errorText.observe(this)
         {
             Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
+            btn_login.isClickable = true
+            btn_login.text = getString(R.string.login)
         }
     }
 

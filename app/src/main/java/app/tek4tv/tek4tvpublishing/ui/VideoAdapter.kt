@@ -1,5 +1,6 @@
 package app.tek4tv.tek4tvpublishing.ui
 
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,12 +56,27 @@ private var adapter: JsonAdapter<List<MediaItem>> = moshi.adapter<List<MediaItem
 
 private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
-class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root)
+class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root), View.OnCreateContextMenuListener
 {
     private val imgThumb = root.findViewById<ImageView>(R.id.img_video_thumb)
     private val txtTitle = root.findViewById<TextView>(R.id.txt_video_title)
     private val txtCreatedDate = root.findViewById<TextView>(R.id.txt_created_date)
+    private val txtTag = root.findViewById<TextView>(R.id.txt_item_tag)
     private val btnPublish = root.findViewById<Button>(R.id.btn_publish_revert)
+
+    init {
+        root.setOnCreateContextMenuListener { menu, v, menuInfo ->
+
+        }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+
+    }
 
     fun bind(video: Video, itemClickListener: (Video) -> Unit)
     {
@@ -82,6 +98,7 @@ class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root)
 
         txtTitle.text = video.title
         txtCreatedDate.text = getDateDiff(video.createDate, txtCreatedDate.context.resources)
+        txtTag.text = video.playlist.name
     }
 
     private fun getThumbUrl(json: String) : String

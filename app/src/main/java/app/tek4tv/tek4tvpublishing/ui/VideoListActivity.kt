@@ -61,7 +61,8 @@ class VideoListActivity : AppCompatActivity()
 
         setupRecycleView()
         registerObservers(viewModel.pagingData)
-        //viewModel.getVideos()
+
+
     }
 
     private fun initSearch()

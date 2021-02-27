@@ -6,4 +6,9 @@
     <string name="days_before">%d ngày trước</string>
     <string name="hours_before">%d giờ trước</string>
     <string name="minutes_before">%d phút trước</string>
+
+    <string name="login">Đăng nhập</string>
+    <string name="username">Tên đăng nhâp</string>
+    <string name="password">Mật khẩu</string>
+    <string name="processing">Đang xử lý</string>
 </resources>
