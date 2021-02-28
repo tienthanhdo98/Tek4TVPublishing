@@ -15,13 +15,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/video_view">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/update_video_chip_group"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            app:singleLine="true" />
+            android:layout_marginRight="8dp">
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/update_video_chip_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleLine="true" />
+        </HorizontalScrollView>
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_video_list"
@@ -32,7 +38,7 @@
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:background="@color/black"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"

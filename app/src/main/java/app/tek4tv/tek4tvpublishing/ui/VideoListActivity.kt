@@ -37,11 +37,10 @@ class VideoListActivity : AppCompatActivity() {
     lateinit var searchView: SearchView
     lateinit var imgLogo: ImageView
     lateinit var swipeLayout: SwipeRefreshLayout
-    var currentChip : Chip? = null
-    lateinit var allChip : Chip
+    var currentChip: Chip? = null
+    lateinit var allChip: Chip
 
     var collectVideoJob: Job? = null
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +74,6 @@ class VideoListActivity : AppCompatActivity() {
 
         initSearch()
         setupRecycleView()
-        //registerObservers(viewModel.pagingData)
     }
 
     private fun initChip(list: List<PlaylistItem>) {
@@ -108,19 +106,22 @@ class VideoListActivity : AppCompatActivity() {
                 if (isChecked) {
                     currentChip?.isChecked = false
                     currentChip = this
+
+                    //disable uncheck all category chip
+                    if (currentChip == allChip)
+                        allChip.isClickable = false
+
                     checkedListener.invoke()
-                    /**/
                 } else {
-                    if(text != getString(R.string.all))
-                    {
+                    //if a chip different from all category chip is uncheck, check all chip to get all video
+                    if (!(this === currentChip)) {
                         rv_videos.scrollToPosition(0)
                         currentChip = allChip
                         allChip.isChecked = true
                     }
-
-                    //viewModel.currentPlaylist = PlaylistItem(0,"","")
-                    /*viewModel.setQuery("", 0, "")
-                    registerObservers(viewModel.pagingData)*/
+                    //if all category chip is uncheck, it can be clicked again
+                    else
+                        allChip.isClickable = true
                 }
             }
         }
@@ -149,7 +150,6 @@ class VideoListActivity : AppCompatActivity() {
                 if (newText != null && newText == "") {
                     rv_videos.scrollToPosition(0)
                     viewModel.currentQuery = ""
-                    viewModel.currentPlaylist = PlaylistItem(0,"","")
                     val data = viewModel.run {
                         viewModel.setQuery("", currentPlaylist.id!!, currentPlaylist.privateKey!!)
                     }
@@ -161,14 +161,7 @@ class VideoListActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         menuInflater.inflate(R.menu.video_list_menu, menu)
-
-        //val searchItem = menu?.findItem(R.id.video_search)
-        //val searchView = searchItem?.actionView as SearchView
-        //searchView.setIconifiedByDefault(false)
-
-
         return true
     }
 

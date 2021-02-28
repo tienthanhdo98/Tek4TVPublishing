@@ -21,7 +21,9 @@ class VideoPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Video> {
         return try {
             val page = params.key ?: 0
-            val res = videoRepo.getVideos(videoPayload)
+            val res = videoRepo.getVideos(videoPayload.apply {
+                this.page = page
+            })
             if (res != null && res.isSuccessful) {
                 LoadResult.Page(
                     data = res.body()!!.result,

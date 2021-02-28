@@ -9,16 +9,16 @@ data class VideoDetail(
         @Json(name = "Name")
         val name: String,
 
-        @Json(name = "ProjectCategoryID")
+        /*@Json(name = "ProjectCategoryID")
         val projectCategoryID: Long,
 
         @Json(name = "CateName")
-        val cateName: String,
+        val cateName: String,*/
 
         @Json(name = "Description")
         val description: String,
 
-        @Json(name = "ThumbNail")
+       /* @Json(name = "ThumbNail")
         val thumbNail: String,
 
         @Json(name = "Banner")
@@ -28,12 +28,12 @@ data class VideoDetail(
         val duration: String,
 
         @Json(name = "Metadata")
-        val metadata: String,
+        val metadata: String,*/
 
         @Json(name = "Path")
         val path: String,
 
-        @Json(name = "RemoteStorage")
+       /* @Json(name = "RemoteStorage")
         val remoteStorage: String,
 
         @Json(name = "StartProject")
@@ -43,7 +43,7 @@ data class VideoDetail(
         val member: String,
 
         @Json(name = "State")
-        val state: State
+        val state: State*/
 )
 
 data class State (

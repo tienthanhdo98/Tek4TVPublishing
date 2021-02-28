@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">Tek4TV Publishing</string>
 
-    <string name="years_before">%d năm trước</string>
-    <string name="months_before">%d tháng trước</string>
-    <string name="days_before">%d ngày trước</string>
-    <string name="hours_before">%d giờ trước</string>
-    <string name="minutes_before">%d phút trước</string>
+    <string name="years_before">%d năm tới</string>
+    <string name="months_before">%d tháng tới</string>
+    <string name="days_before">%d ngày tới</string>
+    <string name="hours_before">%d giờ tới</string>
+    <string name="minutes_before">%d phút tới</string>
 
     <string name="login">Đăng nhập</string>
-    <string name="username">Tên đăng nhâp</string>
+    <string name="username">Tên đăng nhập</string>
     <string name="password">Mật khẩu</string>
     <string name="processing">Đang xử lý</string>
     <string name="all">Tất cả</string>

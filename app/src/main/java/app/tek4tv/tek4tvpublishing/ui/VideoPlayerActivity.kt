@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -22,7 +23,9 @@ import app.tek4tv.tek4tvpublishing.model.Video
 import app.tek4tv.tek4tvpublishing.model.VideoDetail
 import app.tek4tv.tek4tvpublishing.network.Keyword
 import app.tek4tv.tek4tvpublishing.viewmodel.VideoPlayerViewModel
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.Util
@@ -88,7 +91,6 @@ class VideoPlayerActivity : AppCompatActivity() {
         viewModel.curVideo.observe(this)
         {
             playVideo(viewModel.curVideo.value!!)
-
         }
 
 
@@ -103,7 +105,6 @@ class VideoPlayerActivity : AppCompatActivity() {
         super.onStart()
         if (Util.SDK_INT >= 24) {
             initPlayer()
-            //playVideo(viewModel.curVideo.value)
         }
     }
 
@@ -208,14 +209,37 @@ class VideoPlayerActivity : AppCompatActivity() {
         player = SimpleExoPlayer.Builder(this).build()
         videoView.player = player
         player?.playWhenReady = true
+        player!!.addListener(object : Player.EventListener {
+            override fun onPlayerError(error: ExoPlaybackException) {
+                super.onPlayerError(error)
+                error.printStackTrace()
+                videoView.visibility = View.GONE
+            }
 
+            override fun onPlaybackStateChanged(state: Int) {
+                super.onPlaybackStateChanged(state)
+                if (state == Player.STATE_READY) {
+                    if (player!!.videoFormat != null) {
+                        val param = videoView.layoutParams
+                        param.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        videoView.layoutParams = param
+                    } else {
+                        val param = videoView.layoutParams
+                        param.height =( 200 * resources.displayMetrics.density).toInt()
+                        videoView.layoutParams = param
+                    }
+                }
+            }
+        })
+        if (viewModel.curVideo.value != null)
+            playVideo(viewModel.curVideo.value!!)
     }
 
     private fun releasePlayer() {
         if (player != null) {
             viewModel.apply {
-                playbackPosition = player?.currentPosition!!
-                currentWindow = player?.currentWindowIndex!!
+                playbackPosition = player?.currentPosition ?: 0
+                currentWindow = player?.currentWindowIndex ?: 0
             }
             player?.release()
             player = null
@@ -235,21 +259,14 @@ class VideoPlayerActivity : AppCompatActivity() {
     }
 
     private fun playVideo(video: VideoDetail) {
-        //uif (video == null) return
-
-        //if(video.id != viewModel.curVideo?.id)
-        viewModel.resetVideoParams()
-       /* val path =
-            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"*/
+        //viewModel.resetVideoParams()
         val mediaItem = MediaItem.fromUri("https://vodovp.tek4tv.vn/${video.path}")
-        //txt_vid_name.text = video.name
+
         player?.apply {
             setMediaItem(mediaItem)
             seekTo(viewModel.currentWindow, viewModel.playbackPosition)
             prepare()
         }
-        //viewModel.curVideo = video
-        //videosAdapter.videos = viewModel.videoList.filter { it.id != video.id }
     }
 
     companion object {

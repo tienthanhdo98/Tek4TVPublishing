@@ -47,8 +47,8 @@ data class PlayList(
 ) : Serializable*/
 
 data class Video (
-        @Json(name = "Episode")
-        val episode: String,
+        /*@Json(name = "Episode")
+        val episode: String,*/
 
         @Json(name = "ID")
         val id: Long,
@@ -65,7 +65,7 @@ data class Video (
         @Json(name = "Description")
         val description: String,
 
-        @Json(name = "IsSchedule")
+        /*@Json(name = "IsSchedule")
         val isSchedule: Boolean,
 
         @Json(name = "Schedule")
@@ -75,7 +75,7 @@ data class Video (
         val status: String,
 
         @Json(name = "IsPublish")
-        val isPublish: Boolean,
+        val isPublish: Boolean,*/
 
         @Json(name = "Media")
         val media: Media,
