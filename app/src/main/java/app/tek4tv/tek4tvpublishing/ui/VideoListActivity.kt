@@ -74,7 +74,6 @@ class VideoListActivity : AppCompatActivity() {
 
 
         initSearch()
-
         setupRecycleView()
         //registerObservers(viewModel.pagingData)
     }

@@ -103,7 +103,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         super.onStart()
         if (Util.SDK_INT >= 24) {
             initPlayer()
-            playVideo(viewModel.curVideo.value)
+            //playVideo(viewModel.curVideo.value)
         }
     }
 
@@ -234,14 +234,14 @@ class VideoPlayerActivity : AppCompatActivity() {
         rv_video_list.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun playVideo(video: VideoDetail?) {
+    private fun playVideo(video: VideoDetail) {
         //uif (video == null) return
 
         //if(video.id != viewModel.curVideo?.id)
         viewModel.resetVideoParams()
-        val path =
-            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-        val mediaItem = MediaItem.fromUri(path/*"https://vodovp.tek4tv.vn/${video.path}"*/)
+       /* val path =
+            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"*/
+        val mediaItem = MediaItem.fromUri("https://vodovp.tek4tv.vn/${video.path}")
         //txt_vid_name.text = video.name
         player?.apply {
             setMediaItem(mediaItem)

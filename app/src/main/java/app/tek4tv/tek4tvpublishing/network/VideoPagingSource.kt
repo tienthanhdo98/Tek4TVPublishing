@@ -7,9 +7,7 @@ import app.tek4tv.tek4tvpublishing.repositories.VideoRepository
 
 class VideoPagingSource(
     private val videoRepo: VideoRepository,
-    var query: String = "",
-    var playlistId: Long = 0,
-    var privateKey: String = ""
+    private val videoPayload: VideoPayload
 ) : PagingSource<Int, Video>() {
 
 
@@ -23,7 +21,7 @@ class VideoPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Video> {
         return try {
             val page = params.key ?: 0
-            val res = videoRepo.getVideos(playlistId, privateKey, query, page)
+            val res = videoRepo.getVideos(videoPayload)
             if (res != null && res.isSuccessful) {
                 LoadResult.Page(
                     data = res.body()!!.result,

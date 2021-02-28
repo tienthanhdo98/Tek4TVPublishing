@@ -1,6 +1,5 @@
 package app.tek4tv.tek4tvpublishing.network
 
-import app.tek4tv.tek4tvpublishing.model.PlaylistItem
 import app.tek4tv.tek4tvpublishing.model.PlaylistRevertPayload
 import app.tek4tv.tek4tvpublishing.model.VideoDetail
 import retrofit2.Response
@@ -10,7 +9,7 @@ import retrofit2.http.Body
 interface VideosService {
     @POST("media/publish/home")
     suspend fun getVideo(
-        @Body body: app.tek4tv.tek4tvpublishing.network.Body
+        @Body videoPayload: app.tek4tv.tek4tvpublishing.network.VideoPayload
     ): Response<VideosResponse>
 
     @GET("publish/platform/media/{Id}")

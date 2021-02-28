@@ -11,6 +11,7 @@ import androidx.paging.map
 import app.tek4tv.tek4tvpublishing.model.*
 import app.tek4tv.tek4tvpublishing.repositories.VideoRepository
 import app.tek4tv.tek4tvpublishing.network.Keyword
+import app.tek4tv.tek4tvpublishing.network.VideoPayload
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -47,7 +48,7 @@ class VideoPlayerViewModel @ViewModelInject constructor(
         }
     }
 
-    val pagingData : Flow<PagingData<UiModel>> = videoRepository.getSearchResult("")
+    val pagingData : Flow<PagingData<UiModel>> = videoRepository.getSearchResult(null)
         .map<PagingData<Video>, PagingData<UiModel>> { pagingData-> pagingData.map { UiModel.VideoUiItem(it) } }
         .map {
             pagingData ->

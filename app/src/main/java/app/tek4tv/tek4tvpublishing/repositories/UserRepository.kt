@@ -17,6 +17,7 @@ class UserRepository @Inject constructor(
 ) {
     var currentToken = ""
     var currentUser: User? = null
+    var allPlaylist = listOf<PlaylistItem>()
 
     private val _errorText = MutableLiveData<String>()
     val errorText: LiveData<String> = _errorText
@@ -75,6 +76,7 @@ class UserRepository @Inject constructor(
 
             if (response.isSuccessful)
             {
+                allPlaylist = response.body()?: listOf()
                 response
             }
             else
