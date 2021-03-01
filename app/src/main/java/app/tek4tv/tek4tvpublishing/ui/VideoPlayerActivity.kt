@@ -12,6 +12,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -66,7 +67,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         viewModel.videoData = videoData
 
         viewModel.headerData = videoData.run {
-            HeaderData(title, createDate, playlist.name, description)
+            HeaderData(title, videoData.schedule, playlist.name, description)
         }
 
         viewModel.videoId = videoData.media.id
@@ -139,24 +140,48 @@ class VideoPlayerActivity : AppCompatActivity() {
         val playlists = adapter.fromJson(key)
 
         val chip = getChip(getString(R.string.all)) {
-            viewModel.revertFromAllPlaylist(viewModel.videoData!!.id).observe(this)
+
+            displayDialog(viewModel.videoData?.title ?: "", getString(R.string.all))
             {
-                val text = if (it) "Rút lại video thành công" else "Lỗi khi rút video"
-                Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+                viewModel.revertFromAllPlaylist(viewModel.videoData!!.id).observe(this)
+                {
+                    val text = if (it) "Rút lại video thành công" else "Lỗi khi rút video"
+                    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+                }
             }
         }
         update_video_chip_group.addView(chip)
 
         playlists?.forEach { playlist ->
             val chip = getChip(playlist.name) {
-                viewModel.revertFromPlaylist(viewModel.videoData!!.id, playlist.privateKey)
-                    .observe(this) {
-                        val text = if (it) "Rút lại video thành công" else "Lỗi khi rút video"
-                        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-                    }
+                displayDialog(viewModel.videoData?.title ?: "", playlist.name)
+                {
+                    viewModel.revertFromPlaylist(viewModel.videoData!!.id, playlist.privateKey)
+                        .observe(this) {
+                            val text = if (it) "Rút lại video thành công" else "Lỗi khi rút video"
+                            Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+                        }
+                }
             }
             update_video_chip_group.addView(chip)
         }
+    }
+
+    fun displayDialog(videoName: String, playlistName: String, onOk: () -> Unit) {
+        AlertDialog.Builder(this).run {
+
+            setMessage(getString(R.string.revert_video_message, videoName, playlistName))
+            setTitle(R.string.revert_video_dialog_title)
+
+            setPositiveButton("OK") { _, _ ->
+                onOk.invoke()
+            }
+
+            setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.cancel()
+            }
+            create()
+        }.show()
     }
 
     private fun getChip(name: String, clickListener: (View) -> Unit = {}) = Chip(this).apply {
@@ -225,7 +250,7 @@ class VideoPlayerActivity : AppCompatActivity() {
                         videoView.layoutParams = param
                     } else {
                         val param = videoView.layoutParams
-                        param.height =( 200 * resources.displayMetrics.density).toInt()
+                        param.height = (200 * resources.displayMetrics.density).toInt()
                         videoView.layoutParams = param
                     }
                 }

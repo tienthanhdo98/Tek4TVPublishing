@@ -1,15 +1,24 @@
 <resources>
     <string name="app_name">Tek4TV Publishing</string>
 
-    <string name="years_before">%d năm tới</string>
-    <string name="months_before">%d tháng tới</string>
-    <string name="days_before">%d ngày tới</string>
-    <string name="hours_before">%d giờ tới</string>
-    <string name="minutes_before">%d phút tới</string>
+    <string name="years_after">%d năm tới</string>
+    <string name="months_after">%d tháng tới</string>
+    <string name="days_after">%d ngày tới</string>
+    <string name="hours_after">%d giờ tới</string>
+    <string name="minutes_after">%d phút tới</string>
+
+    <string name="years_before">Cách đây %d năm</string>
+    <string name="months_before">Cách đây %d tháng</string>
+    <string name="days_before">Cách đây %d ngày</string>
+    <string name="hours_before">Cách đây %d giờ</string>
+    <string name="minutes_before">Cách đây %d phút</string>
 
     <string name="login">Đăng nhập</string>
     <string name="username">Tên đăng nhập</string>
     <string name="password">Mật khẩu</string>
     <string name="processing">Đang xử lý</string>
     <string name="all">Tất cả</string>
+    <string name="cancel">Hủy</string>
+    <string name="revert_video_dialog_title">Rút lại video</string>
+    <string name="revert_video_message">Bạn có muốn rút lại video \"%s\" khỏi playlist %s ?</string>
 </resources>

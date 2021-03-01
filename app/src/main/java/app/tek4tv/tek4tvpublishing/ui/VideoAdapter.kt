@@ -83,7 +83,7 @@ class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root)
         }
 
         txtTitle.text = video.title
-        txtCreatedDate.text = getDateDiff(video.createDate, txtCreatedDate.context.resources)
+        txtCreatedDate.text = getDateDiff(video.schedule, txtCreatedDate.context.resources)
         txtTag.text = video.playlist.name
     }
 

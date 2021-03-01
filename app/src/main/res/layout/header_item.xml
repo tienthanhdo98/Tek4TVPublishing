@@ -34,7 +34,6 @@
         android:id="@+id/txt_create_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="@+id/txt_title"
         app:layout_constraintStart_toStartOf="@+id/txt_title"
@@ -44,7 +43,6 @@
         android:id="@+id/txt_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="@+id/txt_title"
         app:layout_constraintStart_toStartOf="@+id/txt_title"
@@ -54,11 +52,24 @@
         android:id="@+id/txt_tag"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/txt_description"
         app:layout_constraintStart_toStartOf="@+id/txt_title"
         app:layout_constraintTop_toBottomOf="@+id/txt_description" />
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_tag" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@ sealed class UiModel{
 
 data class HeaderData(
     val title : String,
-    val createDate : String,
+    val scheduledDate : String,
     val tag : String,
     val description : String
 )

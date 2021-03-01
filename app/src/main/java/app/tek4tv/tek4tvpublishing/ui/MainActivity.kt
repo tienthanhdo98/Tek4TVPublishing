@@ -82,12 +82,14 @@ class MainActivity : AppCompatActivity() {
 
         if(username.isEmpty()) {
             Toast.makeText(this, "Nhập tên đăng nhập", Toast.LENGTH_SHORT).show()
+            setLoadingState(false)
             return
         }
 
         if(pass.isEmpty())
         {
             Toast.makeText(this, "Nhập mật khẩu", Toast.LENGTH_SHORT).show()
+            setLoadingState(false)
             return
         }
 

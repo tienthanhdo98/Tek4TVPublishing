@@ -65,13 +65,13 @@ data class Video (
         @Json(name = "Description")
         val description: String,
 
-        /*@Json(name = "IsSchedule")
+        @Json(name = "IsSchedule")
         val isSchedule: Boolean,
 
         @Json(name = "Schedule")
         val schedule: String,
 
-        @Json(name = "Status")
+        /*@Json(name = "Status")
         val status: String,
 
         @Json(name = "IsPublish")

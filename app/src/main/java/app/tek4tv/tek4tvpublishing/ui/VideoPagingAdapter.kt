@@ -78,13 +78,14 @@ class HeaderViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
         data.apply {
             txtTitle.text = title
             txtDescription.text = description
-            val date = Calendar.getInstance().apply {
+            /*val date = Calendar.getInstance().apply {
                 time = dateFormat.parse(createDate)
-            }
-            txtCreatedDate.text =
+            }*/
+            /*txtCreatedDate.text =
                 "Được tạo vào ${date.get(Calendar.DAY_OF_MONTH)}" +
-                        "-${date.get(Calendar.MONTH)}-${date.get(Calendar.YEAR)}"
-            txtDuration.text = getDateDiff(createDate, txtCreatedDate.context.resources)
+                        "-${date.get(Calendar.MONTH) + 1}-${date.get(Calendar.YEAR)}"*/
+            txtCreatedDate.text = ""
+            txtDuration.text = getDateDiff(scheduledDate, txtCreatedDate.context.resources)
             txtTag.text = "Tags: $tag"
         }
     }
@@ -101,6 +102,8 @@ class HeaderViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
 
 fun getDateDiff(date1: String, resource: Resources): String {
     val date = dateFormat.parse(date1)
+    val isBefore = (Date().time >= date!!.time) // cách đây ... ngày
+
     val diff = abs(Date().time - date!!.time)
     val diffMinutes: Long = diff / (60 * 1000)
     val diffHours: Long = diff / (60 * 60 * 1000)
@@ -108,13 +111,28 @@ fun getDateDiff(date1: String, resource: Resources): String {
     val diffMonths = (diff / (60 * 60 * 1000 * 24 * 30.41666666))
     val diffYears: Long = diff / (60.toLong() * 60 * 1000 * 24 * 365)
 
-
-    return when {
-        diffYears >= 1 -> resource.getString(R.string.years_before, diffYears.toInt())
-        diffMonths >= 1 -> resource.getString(R.string.months_before, diffMonths.toInt())
-        diffDays >= 1 -> resource.getString(R.string.days_before, diffDays.toInt())
-        diffHours >= 1 -> resource.getString(R.string.hours_before, diffHours.toInt())
-        diffMinutes >= 1 -> resource.getString(R.string.minutes_before, diffMinutes.toInt())
-        else -> resource.getString(R.string.minutes_before, 1)
+    return if(isBefore)
+    {
+        when {
+            diffYears >= 1 -> resource.getString(R.string.years_before, diffYears.toInt())
+            diffMonths >= 1 -> resource.getString(R.string.months_before, diffMonths.toInt())
+            diffDays >= 1 -> resource.getString(R.string.days_before, diffDays.toInt())
+            diffHours >= 1 -> resource.getString(R.string.hours_before, diffHours.toInt())
+            diffMinutes >= 1 -> resource.getString(R.string.minutes_before, diffMinutes.toInt())
+            else -> resource.getString(R.string.minutes_before, 1)
+        }
     }
+    else
+    {
+        when {
+            diffYears >= 1 -> resource.getString(R.string.years_after, diffYears.toInt())
+            diffMonths >= 1 -> resource.getString(R.string.months_after, diffMonths.toInt())
+            diffDays >= 1 -> resource.getString(R.string.days_after, diffDays.toInt())
+            diffHours >= 1 -> resource.getString(R.string.hours_after, diffHours.toInt())
+            diffMinutes >= 1 -> resource.getString(R.string.minutes_after, diffMinutes.toInt())
+            else -> resource.getString(R.string.minutes_after, 1)
+        }
+    }
+
+
 }
