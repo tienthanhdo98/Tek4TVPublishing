@@ -80,20 +80,22 @@
         android:id="@+id/all_chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
+        android:checkable="true"
         android:text="@string/all"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_toolbar" />
 
-    <androidx.appcompat.widget.SearchView
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
         android:id="@+id/playlist_search"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/all_chip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/all_chip"
-        app:layout_constraintTop_toBottomOf="@+id/app_toolbar"
-        app:queryHint="Chọn playlist video" />
+        app:layout_constraintTop_toBottomOf="@+id/app_toolbar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

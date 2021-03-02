@@ -1,10 +1,12 @@
 package app.tek4tv.tek4tvpublishing.ui
 
-import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +24,7 @@ import app.tek4tv.tek4tvpublishing.model.UiModel
 import app.tek4tv.tek4tvpublishing.model.Video
 import app.tek4tv.tek4tvpublishing.viewmodel.VideoListViewModel
 import com.google.android.material.chip.Chip
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_video_list.*
 import kotlinx.coroutines.Job
@@ -36,11 +39,11 @@ class VideoListActivity : AppCompatActivity() {
     private val videosAdapter = VideoPagingAdapter()
     lateinit var toolbar: Toolbar
     lateinit var searchView: SearchView
-    lateinit var playlistSearch: SearchView
+    lateinit var playlistSearch: SearchableSpinner
     lateinit var imgLogo: ImageView
     lateinit var swipeLayout: SwipeRefreshLayout
-    lateinit var playlistSearchAutoComplete : SearchView.SearchAutoComplete
-    lateinit var playlistSearchAdapter : FilterableAdapter<PlaylistItem>
+    lateinit var playlistSearchAutoComplete: SearchView.SearchAutoComplete
+    lateinit var playlistSearchAdapter: FilterableAdapter<PlaylistItem>
     var currentChip: Chip? = null
     lateinit var allChip: Chip
 
@@ -55,6 +58,7 @@ class VideoListActivity : AppCompatActivity() {
         searchView = findViewById(R.id.search_view)
         playlistSearch = findViewById(R.id.playlist_search)
         imgLogo = findViewById(R.id.img_logo)
+        allChip = findViewById(R.id.all_chip)
 
         swipeLayout.setDistanceToTriggerSync(250)
         swipeLayout.setOnRefreshListener {
@@ -70,7 +74,7 @@ class VideoListActivity : AppCompatActivity() {
         toolbar.overflowIcon = drawable
         title = ""
 
-        playlistSearch.setIconifiedByDefault(false)
+        //playlistSearch.setIconifiedByDefault(false)
 
 
         viewModel.getUserPlaylists().observe(this)
@@ -85,14 +89,14 @@ class VideoListActivity : AppCompatActivity() {
     }
 
     private fun initChip(list: List<PlaylistItem>) {
-        allChip = getChip(PlaylistItem(0, getString(R.string.all), ""))
+        /*allChip = getChip(PlaylistItem(0, getString(R.string.all), ""))
         {
             viewModel.currentPlaylist = PlaylistItem(0, getString(R.string.all), "")
             rv_videos.scrollToPosition(0)
             viewModel.setQuery(viewModel.currentQuery, 0, "")
             registerObservers(viewModel.pagingData)
         }
-        allChip.isChecked = true
+        allChip.isChecked = true*/
         //currentChip = allChip
         /*playlist_chip_group.addView(allChip)
         list.forEach { item ->
@@ -103,6 +107,27 @@ class VideoListActivity : AppCompatActivity() {
                 registerObservers(viewModel.pagingData)
             })
         }*/
+
+        allChip.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+
+                if(playlistSearch.selectedItemPosition == 0)
+                {
+                    allChip.isClickable = false
+                    return@setOnCheckedChangeListener
+                }
+
+                viewModel.currentPlaylist = PlaylistItem(0, getString(R.string.all), "")
+                rv_videos.scrollToPosition(0)
+                viewModel.setQuery(viewModel.currentQuery, 0, "")
+                registerObservers(viewModel.pagingData)
+
+                allChip.isClickable = false
+
+                playlistSearch.setSelection(0)
+            }
+        }
+        allChip.isChecked = true
     }
 
     private fun getChip(playlistItem: PlaylistItem, checkedListener: () -> Unit) =
@@ -168,13 +193,12 @@ class VideoListActivity : AppCompatActivity() {
         })
     }
 
-    private fun initPlaylistSearchView(list: List<PlaylistItem>)
-    {
-        playlistSearchAutoComplete = playlistSearch.findViewById(androidx.appcompat.R.id.search_src_text)
+    private fun initPlaylistSearchView(list: List<PlaylistItem>) {
+        /*playlistSearchAutoComplete = playlistSearch.findViewById(androidx.appcompat.R.id.search_src_text)
         val sm = getSystemService(SEARCH_SERVICE) as SearchManager
         playlistSearchAdapter = FilterableAdapter(this, list)
 
-        playlistSearch.setSearchableInfo(sm.getSearchableInfo(componentName))
+        //playlistSearch.setSearchableInfo(sm.getSearchableInfo(componentName))
         playlistSearchAutoComplete.setAdapter(playlistSearchAdapter)
 
         playlistSearchAutoComplete.setOnItemClickListener { parent, view, position, id ->
@@ -184,6 +208,43 @@ class VideoListActivity : AppCompatActivity() {
             rv_videos.scrollToPosition(0)
             viewModel.setQuery(viewModel.currentQuery, playlist.id!!, playlist.privateKey!!)
             registerObservers(viewModel.pagingData)
+        }*/
+        val items = mutableListOf(PlaylistItem(0, getString(R.string.all), ""))
+        items.addAll(list)
+        val a = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, items)
+        playlistSearch.setAdapter(a)
+        playlistSearch.setTitle(getString(R.string.select_playlist))
+        playlistSearch.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val playlist = a.getItem(position)!!
+
+                if(playlist.name == getString(R.string.all) && allChip.isChecked)
+                    return
+
+                viewModel.currentPlaylist = playlist
+                rv_videos.scrollToPosition(0)
+                viewModel.setQuery(viewModel.currentQuery, playlist.id!!, playlist.privateKey!!)
+                registerObservers(viewModel.pagingData)
+
+                if (playlist.name != getString(R.string.all)) {
+                    allChip.isChecked = false
+                    allChip.isClickable = true
+                }
+                else
+                {
+
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                /*allChip.isChecked = false
+                allChip.isClickable = true*/
+            }
         }
     }
 

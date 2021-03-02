@@ -140,13 +140,13 @@
 
             <ImageView
                 android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 app:layout_constraintBottom_toBottomOf="@+id/view3"
                 app:layout_constraintEnd_toEndOf="@+id/view3"
                 app:layout_constraintStart_toStartOf="@+id/view3"
                 app:layout_constraintTop_toTopOf="@+id/view3"
-                app:srcCompat="@drawable/ic_baseline_home_24" />
+                app:srcCompat="@drawable/icon_login" />
 
             <View
                 android:id="@+id/view4"
