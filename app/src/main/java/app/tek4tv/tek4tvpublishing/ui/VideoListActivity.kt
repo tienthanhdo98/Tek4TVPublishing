@@ -1,5 +1,6 @@
 package app.tek4tv.tek4tvpublishing.ui
 
+import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -35,8 +36,11 @@ class VideoListActivity : AppCompatActivity() {
     private val videosAdapter = VideoPagingAdapter()
     lateinit var toolbar: Toolbar
     lateinit var searchView: SearchView
+    lateinit var playlistSearch: SearchView
     lateinit var imgLogo: ImageView
     lateinit var swipeLayout: SwipeRefreshLayout
+    lateinit var playlistSearchAutoComplete : SearchView.SearchAutoComplete
+    lateinit var playlistSearchAdapter : FilterableAdapter<PlaylistItem>
     var currentChip: Chip? = null
     lateinit var allChip: Chip
 
@@ -49,6 +53,7 @@ class VideoListActivity : AppCompatActivity() {
 
         swipeLayout = findViewById(R.id.swipe_layout)
         searchView = findViewById(R.id.search_view)
+        playlistSearch = findViewById(R.id.playlist_search)
         imgLogo = findViewById(R.id.img_logo)
 
         swipeLayout.setDistanceToTriggerSync(250)
@@ -65,10 +70,13 @@ class VideoListActivity : AppCompatActivity() {
         toolbar.overflowIcon = drawable
         title = ""
 
+        playlistSearch.setIconifiedByDefault(false)
+
 
         viewModel.getUserPlaylists().observe(this)
         {
             initChip(it)
+            initPlaylistSearchView(it)
         }
 
 
@@ -86,7 +94,7 @@ class VideoListActivity : AppCompatActivity() {
         }
         allChip.isChecked = true
         //currentChip = allChip
-        playlist_chip_group.addView(allChip)
+        /*playlist_chip_group.addView(allChip)
         list.forEach { item ->
             playlist_chip_group.addView(getChip(item) {
                 viewModel.currentPlaylist = item
@@ -94,7 +102,7 @@ class VideoListActivity : AppCompatActivity() {
                 viewModel.setQuery(viewModel.currentQuery, item.id!!, item.privateKey!!)
                 registerObservers(viewModel.pagingData)
             })
-        }
+        }*/
     }
 
     private fun getChip(playlistItem: PlaylistItem, checkedListener: () -> Unit) =
@@ -158,6 +166,25 @@ class VideoListActivity : AppCompatActivity() {
                 return false
             }
         })
+    }
+
+    private fun initPlaylistSearchView(list: List<PlaylistItem>)
+    {
+        playlistSearchAutoComplete = playlistSearch.findViewById(androidx.appcompat.R.id.search_src_text)
+        val sm = getSystemService(SEARCH_SERVICE) as SearchManager
+        playlistSearchAdapter = FilterableAdapter(this, list)
+
+        playlistSearch.setSearchableInfo(sm.getSearchableInfo(componentName))
+        playlistSearchAutoComplete.setAdapter(playlistSearchAdapter)
+
+        playlistSearchAutoComplete.setOnItemClickListener { parent, view, position, id ->
+            val playlist = playlistSearchAdapter.getItem(position)!!
+
+            viewModel.currentPlaylist = playlist
+            rv_videos.scrollToPosition(0)
+            viewModel.setQuery(viewModel.currentQuery, playlist.id!!, playlist.privateKey!!)
+            registerObservers(viewModel.pagingData)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

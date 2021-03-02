@@ -12,3 +12,8 @@ data class PlaylistItem(
     @Json(name = "PrivateKey")
     val privateKey: String?
 )
+{
+    override fun toString(): String {
+        return name!!
+    }
+}
