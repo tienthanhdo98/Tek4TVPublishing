@@ -1,5 +1,6 @@
 package app.tek4tv.tek4tvpublishing.ui
 
+import android.util.Log
 import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
@@ -66,15 +67,25 @@ class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root)
 
     fun bind(video: Video, itemClickListener: (Video) -> Unit)
     {
-        val thumbUrl =getThumbUrl(video.image)
-        val dp = thumbUrl.lastIndexOf('.')
-        val p1 = thumbUrl.subSequence(0, dp)
-        val p2 = thumbUrl.subSequence(dp, thumbUrl.length)
-        val finalUrl = "https://vodovp.tek4tv.vn/${p1}_320_180$p2"
+        //val thumbUrl =getThumbUrl(video.image)
+        try {
+            val thumbUrl =getThumbUrl(video.image)
 
-        Glide.with(imgThumb.context)
+            val dp = thumbUrl.lastIndexOf('.')
+            val p1 = thumbUrl.subSequence(0, dp)
+            val p2 = thumbUrl.subSequence(dp, thumbUrl.length)
+            val finalUrl = "https://vodovp.tek4tv.vn/${p1}_320_180$p2"
+
+            Glide.with(imgThumb.context)
                 .load(finalUrl)
                 .into(imgThumb)
+        }
+        catch (e : Exception)
+        {
+            Log.e("imageurl",video.image)
+            e.printStackTrace()
+        }
+
 
         //btnPublish.text = if(video.isPublish) "Rút lại" else "Xuất bản"
 
